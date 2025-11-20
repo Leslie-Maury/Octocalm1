@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Repaso Módulo 3 - Soporte de Vida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #151a2c;
+      --accent: #ffb74d;
+      --accent-soft: rgba(255, 183, 77, 0.2);
+      --accent-2: #64b5f6;
+      --danger: #ef5350;
+      --success: #81c784;
+      --text: #f5f5f5;
+      --muted: #9ea7c5;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: radial-gradient(circle at top, #1b2450, #050713 65%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+
+    h1 span {
+      font-size: 1.2rem;
+      display: block;
+      color: var(--accent-2);
+      margin-top: 5px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      margin-bottom: 18px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .row > * {
+      flex: 1 1 200px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: #050713;
+      color: var(--text);
+      outline: none;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .stat-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.3s ease;
+    }
+
+    .question-topic {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+
+    .options {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(4,7,20,0.8);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.94rem;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .option-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent-2);
+      background: radial-gradient(circle at top left, rgba(100,181,246,0.25), rgba(4,7,20,0.9));
+    }
+
+    .option-btn.correct {
+      border-color: var(--success);
+      background: rgba(129,199,132,0.18);
+    }
+
+    .option-btn.incorrect {
+      border-color: var(--danger);
+      background: rgba(239,83,80,0.15);
+    }
+
+    .feedback {
+      font-size: 0.92rem;
+      margin-top: 6px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .feedback.correct {
+      border-left: 3px solid var(--success);
+    }
+
+    .feedback.incorrect {
+      border-left: 3px solid var(--danger);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button.action {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    button.action.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #050713;
+      font-weight: 600;
+    }
+
+    button.action:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .mini {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Juego de Repaso – Módulo 3
+    <span>Máquinas de anestesia, infusión, RRT, heart–lung & más</span>
+  </h1>
+
+  <!-- Controles superiores -->
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="topicSelect">Tema</label>
+        <select id="topicSelect">
+          <option value="todos">Todos los temas (mixto)</option>
+          <option value="Anestesia - Básico">Anestesia – Básico</option>
+          <option value="Anestesia - Componentes/Seguridad">Anestesia – Componentes/Seguridad</option>
+          <option value="Anestesia - Conversión a ventilador">Anestesia – Conversión a ventilador</option>
+          <option value="Infusión">Infusión</option>
+          <option value="RRT/Hemodiálisis">RRT / Hemodiálisis / CRRT</option>
+          <option value="RRT - Diálisis peritoneal">RRT – Diálisis peritoneal</option>
+          <option value="Heart-Lung / ECMO">Heart–Lung / ECMO / Otros</option>
+        </select>
+        <p class="mini">Tip: elige un tema específico si quieres repasar solo una parte.</p>
+      </div>
+      <div>
+        <label>Modo</label>
+        <div class="row">
+          <button class="action primary" id="studyModeBtn">Modo estudio</button>
+          <button class="action" id="examModeBtn">Modo examen</button>
+        </div>
+        <p class="mini">Estudio = feedback inmediato. Examen = solo ves si acertaste.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <div class="stats">
+        <div class="stat-pill" id="scoreStat">Puntaje: 0/0</div>
+        <div class="stat-pill" id="accuracyStat">Precisión: 0%</div>
+        <div class="stat-pill" id="streakStat">Racha: 0 ✔️</div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-inner" id="progressInner"></div>
+      </div>
+      <p class="mini">Progreso ≈ preguntas únicas vistas en este tema.</p>
+    </div>
+  </div>
+
+  <!-- Tarjeta de pregunta -->
+  <div class="card" id="questionCard">
+    <div class="question-topic" id="questionTopic"></div>
+    <div class="question-text" id="questionText"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div id="feedbackArea"></div>
+
+    <div class="btn-row">
+      <button class="action primary" id="checkBtn">Comprobar respuesta</button>
+      <button class="action" id="nextBtn" disabled>Siguiente pregunta ➜</button>
+      <button class="action" id="resetBtn">Reiniciar stats</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <strong>¿Cómo usar esto rápido?</strong>
+    <ul style="font-size:0.9rem; color:var(--muted); margin-top:6px; padding-left:18px;">
+      <li>1) Elige un tema arriba (por ejemplo “Infusión”).</li>
+      <li>2) Contesta ~10 preguntas seguidas en ese tema.</li>
+      <li>3) Cambia a otro tema (RRT, heart–lung, etc.).</li>
+      <li>4) Cuando ya domines todo, usa “Todos los temas (mixto)” en modo examen.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // =================== BANCO DE PREGUNTAS ===================
+
+  const questions = [
+    // ========= ANESTESIA – BÁSICO =========
+    {
+      topic: "Anestesia - Básico",
+      question: "¿Cuál es la función principal de la máquina de anestesia durante un procedimiento quirúrgico?",
+      options: [
+        "Solo monitorear signos vitales",
+        "Mezclar gases (O₂, aire, N₂O y agente anestésico) y facilitar la ventilación segura del paciente",
+        "Actuar como bomba de circulación extracorpórea",
+        "Realizar radiografías intraoperatorias"
+      ],
+      correctIndex: 1,
+      explanation: "La máquina de anestesia mezcla O₂, aire, N₂O y anestésicos volátiles para controlar el estado de consciencia y, con su ventilador, mantiene una ventilación controlada y segura."
+    },
+    {
+      topic: "Anestesia - Básico",
+      question: "¿Cuál NO es una de las funciones principales de la máquina de anestesia?",
+      options: [
+        "Proporcionar oxígeno al paciente",
+        "Mezclar gases y anestésico volátil",
+        "Facilitar ventilación mecánica",
+        "Realizar hemodiálisis intermitente"
+      ],
+      correctIndex: 3,
+      explanation: "La hemodiálisis es función de la máquina de hemodiálisis; la máquina de anestesia se enfoca en mezcla de gases, oxigenación y ventilación."
+    },
+    {
+      topic: "Anestesia - Básico",
+      question: "En una máquina de anestesia, ¿qué significa FiO₂?",
+      options: [
+        "Fracción de oxígeno inspirado en el gas que se entrega al paciente",
+        "Flujo inicial de oxígeno a la máquina",
+        "Frecuencia inspiratoria del paciente",
+        "Fibrilación intermitente de oxígeno"
+      ],
+      correctIndex: 0,
+      explanation: "FiO₂ es la fracción de oxígeno en la mezcla de gas inspirada por el paciente."
+    },
+    {
+      topic: "Anestesia - Básico",
+      question: "¿Qué modo ventilatorio NO es típico en una máquina de anestesia básica?",
+      options: [
+        "VCV (control por volumen)",
+        "PCV (control por presión)",
+        "Manual / espontáneo",
+        "ECMO"
+      ],
+      correctIndex: 3,
+      explanation: "ECMO es un sistema extracorpóreo, no un modo de ventilación de la máquina de anestesia."
+    },
+    {
+      topic: "Anestesia - Básico",
+      question: "¿Cuál es el parámetro ventilatorio que define el volumen de cada respiración?",
+      options: [
+        "VT (tidal volume)",
+        "PEEP",
+        "Pmax",
+        "EtCO₂"
+      ],
+      correctIndex: 0,
+      explanation: "El volumen corriente o VT es el volumen de gas entregado en cada ciclo respiratorio."
+    },
+
+    // ========= ANESTESIA – COMPONENTES / SEGURIDAD =========
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "En la parte de gases, cada cilindro pasa por un regulador que típicamente reduce la presión a:",
+      options: [
+        "5 psi",
+        "45 psi",
+        "150 psi",
+        "400 kPa (solo flush)"
+      ],
+      correctIndex: 1,
+      explanation: "Los reguladores de línea de cilindros reducen la presión de alta a alrededor de 45 psi para ser manejable por el sistema."
+    },
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "¿Qué es el sistema Hypoxic Guard en una máquina de anestesia?",
+      options: [
+        "Un sistema de respaldo de batería",
+        "Un protector contra sobrepresión en la vía aérea",
+        "Un sistema que evita que la mezcla administrada tenga menos de 21% de O₂",
+        "Un filtro especial para CO₂ en el circuito"
+      ],
+      correctIndex: 2,
+      explanation: "El Hypoxic Guard evita mezclas hipóxicas, ya sea acoplando mecánicamente las válvulas o usando un analizador de O₂ con acciones de protección."
+    },
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "¿Por qué el flowmeter de O₂ suele ir hasta el final de la línea (más cercano al vaporizador)?",
+      options: [
+        "Para ahorrar oxígeno",
+        "Para reducir el riesgo de que una fuga downstream produzca una mezcla hipóxica",
+        "Porque el O₂ es más pesado",
+        "Por razones estéticas del panel"
+      ],
+      correctIndex: 1,
+      explanation: "Si hubiera una fuga downstream, tener el flowmeter de O₂ al final reduce el riesgo de entregar una mezcla con muy poco oxígeno."
+    },
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "¿Cuál es la función del canister con cal sodada (soda lime) en la máquina de anestesia?",
+      options: [
+        "Agregar más O₂ al circuito",
+        "Absorber CO₂ del gas recirculado",
+        "Filtrar bacterias y virus",
+        "Medir EtCO₂"
+      ],
+      correctIndex: 1,
+      explanation: "El absorbedor con soda lime elimina CO₂ del gas recirculado para evitar hipercapnia."
+    },
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "¿Qué característica de seguridad tienen los vaporizadores para evitar errores de agente?",
+      options: [
+        "Todos usan el mismo conector universal",
+        "No tienen cerradura",
+        "Son específicos de agente y tienen códigos de color/llaves especiales",
+        "Se llenan por gravedad sin conexión"
+      ],
+      correctIndex: 2,
+      explanation: "Los vaporizadores son agente–específicos y usan sistemas de llenado propios para evitar poner el agente incorrecto."
+    },
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "¿Qué hace la válvula APL (Adjustable Pressure Limiting)?",
+      options: [
+        "Ajusta la FiO₂",
+        "Limita la presión máxima y envía exceso de gas al sistema de escape",
+        "Controla la temperatura del gas",
+        "Enciende el ventilador"
+      ],
+      correctIndex: 1,
+      explanation: "La APL es una válvula de alivio de presión ajustable que protege contra sobrepresión en ventilación manual."
+    },
+    {
+      topic: "Anestesia - Componentes/Seguridad",
+      question: "El ‘oxygen flush’ entrega:",
+      options: [
+        "35–75 L/min de O₂ a alta presión, por eso sólo se usa cuando el paciente NO está conectado",
+        "0.5 L/min de aire ambiente",
+        "N₂O puro para inducción rápida",
+        "Una mezcla 50/50 N₂O/O₂"
+      ],
+      correctIndex: 0,
+      explanation: "El flush de O₂ entrega un flujo muy alto de oxígeno y puede generar barotrauma si se usa con el paciente conectado."
+    },
+
+    // ========= ANESTESIA – CONVERSIÓN A VENTILADOR =========
+    {
+      topic: "Anestesia - Conversión a ventilador",
+      question: "Antes de convertir un Dräger Primus a ventilador mecánico de emergencia, ¿qué debes tener SIEMPRE listo?",
+      options: [
+        "Una máquina de hemodiálisis",
+        "Un desfibrilador externo automático",
+        "Un dispositivo de ventilación manual (resucitador) con filtro HEPA y fuente de O₂",
+        "Un marcapasos externo transcutáneo"
+      ],
+      correctIndex: 2,
+      explanation: "Siempre se requiere respaldo de ventilación manual con filtro HEPA en caso de falla del equipo."
+    },
+    {
+      topic: "Anestesia - Conversión a ventilador",
+      question: "Durante la conversión de una máquina de anestesia a ventilador, ¿qué se recomienda hacer con el N₂O?",
+      options: [
+        "Conectarlo como gas principal",
+        "Desconectar mangueras y cilindros de N₂O para no usarlo",
+        "Aumentar su concentración para sedación",
+        "No importa, se puede dejar conectado"
+      ],
+      correctIndex: 1,
+      explanation: "En conversión a ventilador de emergencia se recomienda NO usar N₂O: se desconectan mangueras y cilindros."
+    },
+    {
+      topic: "Anestesia - Conversión a ventilador",
+      question: "Al preparar un Primus / Carestation para ventilación prolongada, respecto a los vaporizadores se debe:",
+      options: [
+        "Dejarlos encendidos al 1%",
+        "Quitarlos o apagarlos y purgar con O₂",
+        "Cambiar el anestésico a desflurano",
+        "No realizar ninguna acción"
+      ],
+      correctIndex: 1,
+      explanation: "Se deben apagar o retirar los vaporizadores y purgar la línea con O₂ para evitar exposición innecesaria a anestésico."
+    },
+    {
+      topic: "Anestesia - Conversión a ventilador",
+      question: "En la guía de GE Carestation 650 Plus, ¿cada cuánto se requiere el self-test automático que impide ventilar durante su ejecución?",
+      options: [
+        "Cada 72 horas",
+        "Cada 24 horas",
+        "Cada 12 horas",
+        "Una vez a la semana"
+      ],
+      correctIndex: 2,
+      explanation: "El self-test automático está programado típicamente cada 12 horas; durante este tiempo la máquina no ventila, y se debe asegurar ventilación alternativa."
+    },
+    {
+      topic: "Anestesia - Conversión a ventilador",
+      question: "En la conversión descrita, la válvula APL al final debe colocarse en:",
+      options: [
+        "MAN a 30 mbar y dejarla así",
+        "0 cmH₂O y modo VENT en el selector Bag/Vent",
+        "Valor máximo para evitar fugas",
+        "No se usa la APL en conversión"
+      ],
+      correctIndex: 1,
+      explanation: "Tras la prueba, la APL se deja en 0 cmH₂O y el selector en VENT para ventilación mecánica."
+    },
+
+    // ========= INFUSIÓN =========
+    {
+      topic: "Infusión",
+      question: "La infusión intravenosa se define como:",
+      options: [
+        "Administración de medicamentos por vía oral",
+        "Entrega de medicamento, nutrición o líquidos directamente en la vena para acceso rápido al torrente sanguíneo",
+        "Solo transfusión de sangre",
+        "Aplicación tópica de fármacos"
+      ],
+      correctIndex: 1,
+      explanation: "La definición clásica incluye medicamentos, nutrientes o soluciones administrados directamente al sistema venoso para absorción rápida."
+    },
+    {
+      topic: "Infusión",
+      question: "¿Cuál de los siguientes NO es un tipo de dispositivo de infusión mencionado?",
+      options: [
+        "Bomba elastomérica",
+        "Controlador de infusión (drip controller)",
+        "Volumetric pump",
+        "Resonador magnético de infusión"
+      ],
+      correctIndex: 3,
+      explanation: "El resonador magnético de infusión no existe como dispositivo; los demás sí son dispositivos de infusión reales."
+    },
+    {
+      topic: "Infusión",
+      question: "Una bomba volumétrica de infusión genera flujo por:",
+      options: [
+        "Gravedad únicamente",
+        "Presión positiva mediante mecanismo interno (pistón, diafragma o peristáltico)",
+        "Evaporación del líquido",
+        "Acción capilar de la manguera"
+      ],
+      correctIndex: 1,
+      explanation: "Las bombas volumétricas generan presión positiva mediante un mecanismo mecánico, controlando con precisión el flujo."
+    },
+    {
+      topic: "Infusión",
+      question: "¿Qué mecanismo corresponde a una bomba lineal peristáltica?",
+      options: [
+        "Un solo pistón que empuja una jeringa",
+        "Serie de varillas (rods) que presionan secuencialmente la línea de infusión",
+        "Un diafragma que vibra",
+        "Una bomba centrífuga"
+      ],
+      correctIndex: 1,
+      explanation: "La bomba lineal peristáltica usa varias varillas que comprimen la línea en secuencia, logrando un flujo muy preciso."
+    },
+    {
+      topic: "Infusión",
+      question: "En una bomba volumétrica, ¿qué significa VTBI?",
+      options: [
+        "Very tiny blood index",
+        "Voltage to be infused",
+        "Volume To Be Infused",
+        "Ventilation Time Between Infusions"
+      ],
+      correctIndex: 2,
+      explanation: "VTBI es el volumen total programado que se debe infundir en una terapia."
+    },
+    {
+      topic: "Infusión",
+      question: "¿Cuál es una alarma típica en bombas de infusión?",
+      options: [
+        "Fiebre del paciente",
+        "Batería baja, oclusión en la línea, aire en línea y Near End Of Infusion (NEOI)",
+        "Hipertensión arterial",
+        "Bradicardia sinusal"
+      ],
+      correctIndex: 1,
+      explanation: "Las bombas incluyen alarmas de oclusión, aire en línea, fin de infusión y batería baja, entre otras."
+    },
+    {
+      topic: "Infusión",
+      question: "¿Qué afirmación es correcta sobre las bombas de jeringa (syringe infuser)?",
+      options: [
+        "Usan rodillos externos para mover el fluido",
+        "Mueven un tornillo con paso definido que empuja el émbolo de la jeringa",
+        "Solo funcionan con jeringas de 5 ml",
+        "No permiten flujos bajos (<1 mL/h)"
+      ],
+      correctIndex: 1,
+      explanation: "Un motor mueve un tornillo con un paso determinado; este tornillo empuja el émbolo, permitiendo flujos muy bajos y precisos."
+    },
+
+    // ========= RRT / HEMODIÁLISIS / CRRT =========
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "La Terapia de Reemplazo Renal (RRT) se define como:",
+      options: [
+        "Proceso que reemplaza completamente todas las funciones endocrinas del riñón",
+        "Proceso artificial que reemplaza parcialmente la función renal, especialmente la filtración",
+        "Solo transfusión de sangre",
+        "Únicamente administración de diuréticos"
+      ],
+      correctIndex: 1,
+      explanation: "La RRT reemplaza parcialmente funciones renales, sobre todo filtración y eliminación de solutos y agua."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "En hemodiálisis, el dializador (filtro) permite el paso de:",
+      options: [
+        "Agua y solutos pequeños/medianos, pero no células sanguíneas ni proteínas grandes",
+        "Solo glóbulos rojos",
+        "Solo proteínas plasmáticas",
+        "Todos los componentes de la sangre sin selectividad"
+      ],
+      correctIndex: 0,
+      explanation: "La membrana semipermeable permite paso de agua y solutos de bajo y mediano peso molecular, pero retiene células y proteínas grandes."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "¿Qué mecanismo de transporte domina la eliminación de solutos pequeños (<500 Da) en hemodiálisis convencional?",
+      options: [
+        "Difusión",
+        "Ultrafiltración (convección) exclusivamente",
+        "Adsorción",
+        "Osmosis inversa"
+      ],
+      correctIndex: 0,
+      explanation: "La difusión a través del gradiente de concentración entre sangre y dialisato es el mecanismo principal para solutos pequeños."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "La ultrafiltración (en este contexto) se refiere principalmente a:",
+      options: [
+        "Transporte de solvente y solutos por un gradiente de presión (convección)",
+        "Difusión simple por gradiente de concentración",
+        "Solo adsorción sobre la membrana",
+        "Evaporación del dialisato"
+      ],
+      correctIndex: 0,
+      explanation: "La ultrafiltración es un proceso convectivo: arrastra solvente y solutos a través de la membrana impulsados por la presión transmembrana."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "En RRT, ¿qué técnica está pensada para uso continuo en UCI con flujo lento y membranas más porosas?",
+      options: [
+        "IHD (hemodiálisis intermitente)",
+        "CRRT (Continuous Renal Replacement Therapy)",
+        "Peritoneal dialysis manual",
+        "SLED únicamente"
+      ],
+      correctIndex: 1,
+      explanation: "CRRT se usa de forma continua, con flujos más bajos y membranas más porosas, mejor tolerada hemodinámicamente."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "En CRRT, la modalidad SCUF (Slow Continuous Ultrafiltration) tiene como objetivo principal:",
+      options: [
+        "Eliminar solutos por difusión intensiva",
+        "Controlar únicamente el volumen (remoción de líquido) con poca o nula depuración de solutos",
+        "Reemplazar función endocrina del riñón",
+        "Administrar nutrición parenteral"
+      ],
+      correctIndex: 1,
+      explanation: "SCUF se centra en la remoción de líquido para pacientes con sobrecarga de volumen, sin un alto foco en la depuración de solutos."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "¿Qué modalidad de CRRT combina difusión y convección?",
+      options: [
+        "SCUF",
+        "CVVH",
+        "CVVHD",
+        "CVVHDF"
+      ],
+      correctIndex: 3,
+      explanation: "CVVHDF (hemodiafiltración venovenosa continua) combina hemodiálisis (difusión) y hemofiltración (convección)."
+    },
+    {
+      topic: "RRT/Hemodiálisis",
+      question: "¿Cuál de los siguientes accesos es típico para hemodiálisis crónica en brazo?",
+      options: [
+        "Fístula arteriovenosa (arteria radial – vena cefálica)",
+        "Catéter venoso femoral temporal",
+        "Catéter central subclavio de corta duración",
+        "Catéter intratecal"
+      ],
+      correctIndex: 0,
+      explanation: "La fístula AV radial–cefálica es un acceso clásico y duradero para hemodiálisis crónica."
+    },
+
+    // ========= RRT – DIÁLISIS PERITONEAL =========
+    {
+      topic: "RRT - Diálisis peritoneal",
+      question: "En la diálisis peritoneal, la membrana de intercambio es:",
+      options: [
+        "La membrana de un dializador externo",
+        "La piel del paciente",
+        "El peritoneo del paciente",
+        "Una membrana de celulosa artificial"
+      ],
+      correctIndex: 2,
+      explanation: "En diálisis peritoneal, la cavidad peritoneal y su membrana actúan como filtro biológico."
+    },
+    {
+      topic: "RRT - Diálisis peritoneal",
+      question: "¿Cuál es una desventaja importante de la diálisis peritoneal?",
+      options: [
+        "No se puede realizar en UCI",
+        "Riesgo de peritonitis si no se cuida bien el catéter",
+        "No requiere monitoreo de volumen",
+        "No se puede usar en pacientes diabéticos"
+      ],
+      correctIndex: 1,
+      explanation: "La peritonitis es una complicación grave si no se cuida adecuadamente el sitio del catéter."
+    },
+    {
+      topic: "RRT - Diálisis peritoneal",
+      question: "La diálisis peritoneal automatizada es, en comparación con hemodiálisis, generalmente:",
+      options: [
+        "Más rápida pero peor tolerada",
+        "Más lenta y se asemeja más a la fisiología normal de los riñones",
+        "Igual de rápida que la hemodiálisis de alto flujo",
+        "Incompatible con pacientes en UCI"
+      ],
+      correctIndex: 1,
+      explanation: "La diálisis peritoneal es más lenta y continua, asemejándose más al funcionamiento fisiológico renal."
+    },
+
+    // ========= HEART–LUNG, ECMO Y OTROS =========
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "La heart–lung machine (máquina corazón–pulmón) se utiliza principalmente para:",
+      options: [
+        "Control de presión arterial en UCI",
+        "Sustituir temporalmente la función cardiaca y pulmonar durante cirugía cardiaca",
+        "Filtrar la sangre en hemodiálisis",
+        "Administrar nutrición parenteral"
+      ],
+      correctIndex: 1,
+      explanation: "Durante bypass cardiopulmonar, la máquina corazón–pulmón asume la circulación y la oxigenación mientras el corazón está detenido."
+    },
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "En la heart–lung machine, el sistema debe proporcionar:",
+      options: [
+        "Volumen de perfusión suficiente, presión adecuada (50–90 mmHg), oxigenación y control de temperatura",
+        "Solo oxigenación sin control de presión",
+        "Solo control de temperatura",
+        "Únicamente succión cardiaca"
+      ],
+      correctIndex: 0,
+      explanation: "Debe reproducir un gasto cardíaco adecuado, mantener presión de perfusión, oxigenar, remover CO₂ y controlar temperatura."
+    },
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "¿Cuál es una desventaja clave de las bombas de rodillos (roller) en la máquina corazón–pulmón?",
+      options: [
+        "Son muy baratas",
+        "No pueden generar presión suficiente",
+        "Pueden producir hemólisis y spallation si la oclusión es incorrecta",
+        "No permiten flujo pulsátil"
+      ],
+      correctIndex: 2,
+      explanation: "La oclusión excesiva causa hemólisis y microfragmentación de la manguera (spallation); la oclusión insuficiente provoca turbulencia y daño celular."
+    },
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "Una bomba centrífuga en circulación extracorpórea se caracteriza por:",
+      options: [
+        "Ser oclusiva y bombear contra cualquier resistencia",
+        "Ser no oclusiva y dependiente de pre y poscarga",
+        "No necesitar energía",
+        "No producir nunca calor ni trombos"
+      ],
+      correctIndex: 1,
+      explanation: "La bomba centrífuga es no oclusiva y el flujo depende de la presión de entrada y salida; es menos propensa a disecciones de vaso pero más compleja."
+    },
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "ECMO (Extracorporeal Membrane Oxygenation) se diferencia de la bypass machine clásica porque:",
+      options: [
+        "Solo se usa para minutos",
+        "Está diseñado para soporte prolongado en falla cardiaca o respiratoria grave",
+        "No oxigena la sangre",
+        "No utiliza bomba"
+      ],
+      correctIndex: 1,
+      explanation: "ECMO se usa por períodos prolongados en UCI para soporte cardiopulmonar, mientras que el bypass tradicional se usa durante una cirugía."
+    },
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "¿Cuál es la función principal de un Ventricular Assist Device (VAD)?",
+      options: [
+        "Producir corriente eléctrica para marcapasos",
+        "Asistir parcialmente la función de bombeo del corazón (LVAD o RVAD)",
+        "Reemplazar los riñones",
+        "Oxigenar la sangre fuera del cuerpo"
+      ],
+      correctIndex: 1,
+      explanation: "Los VAD asisten al ventrículo izquierdo o derecho, ayudando a eyectar sangre al sistema circulatorio."
+    },
+    {
+      topic: "Heart-Lung / ECMO",
+      question: "El IABP (Intra-Aortic Balloon Pump) mejora el gasto cardiaco principalmente al:",
+      options: [
+        "Incrementar la frecuencia cardiaca",
+        "Inflarse en sístole para aumentar la poscarga",
+        "Inflarse en diástole para aumentar perfusión coronaria y disminuir poscarga en sístole",
+        "Filtrar la sangre de toxinas"
+      ],
+      correctIndex: 2,
+      explanation: "El balón se infla en diástole (aumenta perfusión coronaria) y se desinfla antes de la sístole, reduciendo la poscarga."
+    }
+  ];
+
+  // =================== LÓGICA DEL JUEGO ===================
+
+  const topicSelect = document.getElementById("topicSelect");
+  const questionTopicEl = document.getElementById("questionTopic");
+  const questionTextEl = document.getElementById("questionText");
+  const optionsContainer = document.getElementById("optionsContainer");
+  const feedbackArea = document.getElementById("feedbackArea");
+
+  const scoreStat = document.getElementById("scoreStat");
+  const accuracyStat = document.getElementById("accuracyStat");
+  const streakStat = document.getElementById("streakStat");
+  const progressInner = document.getElementById("progressInner");
+
+  const checkBtn = document.getElementById("checkBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const studyModeBtn = document.getElementById("studyModeBtn");
+  const examModeBtn = document.getElementById("examModeBtn");
+
+  let currentQuestion = null;
+  let currentIndex = -1;
+  let selectedIndex = null;
+  let answered = 0;
+  let correct = 0;
+  let streak = 0;
+  let mode = "study"; // "study" or "exam"
+  let seenQuestions = new Set(); // para progreso por tema
+
+  function getFilteredQuestions() {
+    const topic = topicSelect.value;
+    if (topic === "todos") return questions;
+    return questions.filter(q => q.topic === topic);
+  }
+
+  function pickNewQuestion() {
+    const pool = getFilteredQuestions();
+    if (pool.length === 0) return;
+
+    let idx;
+    // intentar no repetir tanto dentro del mismo tema
+    const poolIndices = pool.map((_, i) => i);
+    const maxTries = 20;
+    let tries = 0;
+    do {
+      idx = Math.floor(Math.random() * pool.length);
+      tries++;
+    } while (seenQuestions.has(topicSelect.value + "-" + idx) && tries < maxTries);
+
+    currentQuestion = pool[idx];
+    currentIndex = idx;
+    selectedIndex = null;
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    // Título de tema + texto
+    questionTopicEl.textContent = currentQuestion.topic;
+    questionTextEl.textContent = currentQuestion.question;
+
+    // Opciones
+    optionsContainer.innerHTML = "";
+    currentQuestion.options.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.textContent = (i + 1) + ") " + opt;
+      btn.addEventListener("click", () => selectOption(i));
+      optionsContainer.appendChild(btn);
+    });
+
+    feedbackArea.innerHTML = "";
+    checkBtn.disabled = false;
+    nextBtn.disabled = true;
+  }
+
+  function selectOption(i) {
+    selectedIndex = i;
+    const buttons = optionsContainer.querySelectorAll(".option-btn");
+    buttons.forEach((btn, idx) => {
+      btn.classList.toggle("selected", idx === i);
+      btn.classList.remove("correct", "incorrect");
+    });
+    feedbackArea.innerHTML = "";
+  }
+
+  function checkAnswer() {
+    if (selectedIndex === null) {
+      feedbackArea.innerHTML = "<div class='feedback incorrect'>Elige primero una opción 📌</div>";
+      return;
+    }
+
+    const buttons = optionsContainer.querySelectorAll(".option-btn");
+    buttons.forEach((btn, idx) => {
+      btn.classList.remove("selected");
+      if (idx === currentQuestion.correctIndex) {
+        btn.classList.add("correct");
+      } else if (idx === selectedIndex && idx !== currentQuestion.correctIndex) {
+        btn.classList.add("incorrect");
+      }
+    });
+
+    const isCorrect = selectedIndex === currentQuestion.correctIndex;
+    answered++;
+    if (isCorrect) {
+      correct++;
+      streak++;
+    } else {
+      streak = 0;
+    }
+    seenQuestions.add(topicSelect.value + "-" + currentIndex);
+
+    updateStats();
+
+    let fbClass = isCorrect ? "feedback correct" : "feedback incorrect";
+    let emoji = isCorrect ? "✅" : "❌";
+    let textIntro = isCorrect
+      ? "¡Bien! Respuesta correcta."
+      : `Respuesta incorrecta. La opción correcta es: ${(currentQuestion.correctIndex + 1)}.`;
+
+    const explanationHtml =
+      `<div class="${fbClass}">
+        <strong>${emoji} ${textIntro}</strong><br>
+        ${mode === "study" ? currentQuestion.explanation : "Modo examen: revisa la explicación en tus notas o cambia a modo estudio para ver más detalle."}
+       </div>`;
+    feedbackArea.innerHTML = explanationHtml;
+
+    checkBtn.disabled = true;
+    nextBtn.disabled = false;
+  }
+
+  function updateStats() {
+    scoreStat.textContent = `Puntaje: ${correct}/${answered}`;
+    const acc = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+    accuracyStat.textContent = `Precisión: ${acc}%`;
+    streakStat.textContent = `Racha: ${streak} ✔️`;
+
+    // progreso = proporción de preguntas únicas vistas en este tema
+    const pool = getFilteredQuestions();
+    let countSeen = 0;
+    pool.forEach((_, i) => {
+      if (seenQuestions.has(topicSelect.value + "-" + i)) countSeen++;
+    });
+    const progress = pool.length > 0 ? (countSeen / pool.length) * 100 : 0;
+    progressInner.style.width = progress + "%";
+  }
+
+  function nextQuestion() {
+    pickNewQuestion();
+  }
+
+  function resetStats() {
+    answered = 0;
+    correct = 0;
+    streak = 0;
+    seenQuestions.clear();
+    updateStats();
+    pickNewQuestion();
+  }
+
+  function setMode(newMode) {
+    mode = newMode;
+    if (mode === "study") {
+      studyModeBtn.classList.add("primary");
+      examModeBtn.classList.remove("primary");
+    } else {
+      examModeBtn.classList.add("primary");
+      studyModeBtn.classList.remove("primary");
+    }
+  }
+
+  // Event listeners
+  checkBtn.addEventListener("click", checkAnswer);
+  nextBtn.addEventListener("click", nextQuestion);
+  resetBtn.addEventListener("click", resetStats);
+
+  topicSelect.addEventListener("change", () => {
+    // al cambiar de tema no borro stats globales, solo el progreso de ese tema se recalcula
+    pickNewQuestion();
+    updateStats();
+  });
+
+  studyModeBtn.addEventListener("click", () => setMode("study"));
+  examModeBtn.addEventListener("click", () => setMode("exam"));
+
+  // Inicializar
+  setMode("study");
+  pickNewQuestion();
+  updateStats();
+</script>
+</body>
+</html>
