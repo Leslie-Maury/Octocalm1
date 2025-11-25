@@ -4,43 +4,133 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OctoCalm 🐙</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    // ⚠️ Cambia TU_PUBLIC_KEY_EMAILJS por tu public key de EmailJS
+    (function() {
+      emailjs.init("TU_PUBLIC_KEY_EMAILJS");
+    })();
+  </script>
+
   <style>
-    body { 
-      font-family:sans-serif; 
-      text-align: center; 
-      background-color: #ffffe0; 
-      color: green; 
-      padding: 20px;
+    * {
+      box-sizing: border-box;
     }
+
+    body { 
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe4f3, #fdfcda);
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 900px;
+      background: #ffffffdd;
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 25px 20px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 35px 40px 40px;
+      }
+
+      .top-layout {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 24px;
+        align-items: center;
+      }
+    }
+
     h1 { 
       font-family: 'Pacifico', cursive; 
       color: #f74fa9; 
-      font-size: 4.5em;
+      font-size: 3.2rem;
+      text-align: center;
+      margin: 0 0 10px;
     }
-    #status { font-size: 1.2em; margin: 10px; color: #bd7aff; }
 
-    input {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #0288d1;
-      font-size: 20px;
-      width: 60%;
+    .subtitle {
+      text-align: center;
+      font-size: 1.05rem;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    #nombre {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid #c7d7ff;
+      font-size: 1rem;
+      width: 100%;
       text-align: center;
       margin-bottom: 15px;
+      outline: none;
+      transition: box-shadow 0.2s, border-color 0.2s;
     }
-    button {
-      background-color: #569ad1; 
-      color: black; 
-      border: none;
-      padding: 15px 25px; 
-      border-radius: 12px; 
-      font-size: 20px;
-      margin: 10px;
-      cursor: pointer;
+    #nombre:focus {
+      border-color: #f48fb1;
+      box-shadow: 0 0 0 3px rgba(244,143,177,0.25);
     }
 
-    /* Colores individuales para cada botón al pasar el mouse */
+    #feeling { 
+      font-size: 1.4rem; 
+      margin: 8px 0 12px; 
+      color: #333; 
+      font-family: 'Pacifico', cursive; 
+      text-align: center;
+    }
+
+    #buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    button {
+      border: none;
+      padding: 12px 20px; 
+      border-radius: 999px; 
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease, color 0.12s ease;
+    }
+
+    button:active {
+      transform: scale(0.97);
+      box-shadow: none;
+    }
+
+    .btn-mood {
+      background-color: #e3f2fd;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
     .btn-feliz:hover {
       background-color: #4caf50; /* verde */
       color: white;
@@ -56,65 +146,201 @@
       color: white;
     }
 
-    #feeling { 
-      font-size: 1.5em; 
-      margin: 10px; 
-      color: #000000; 
-      font-family: 'Pacifico', cursive; 
+    #indicador-wrapper {
+      text-align: center;
     }
 
-    #frase {
-      font-size: 2em;
-      margin-bottom: 15px;
-    }
-
-    /* circulito para nivel de estrés */
     #indicador {
-      width: 120px;
-      height: 120px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
-      margin: 20px auto 5px;
-      background-color: #4caf50;
+      margin: 10px auto 5px;
+      background: #4caf50;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 1.2em;
-      font-weight: bold;
+      font-size: 1.15rem;
+      font-weight: 700;
+      box-shadow: 0 0 18px rgba(76,175,80,0.7);
+      transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
     }
 
-    #musicStatus {
-      font-size: 1em;
+    #indicador.relajado {
+      box-shadow: 0 0 18px rgba(76,175,80,0.7);
+    }
+    #indicador.medio {
+      box-shadow: 0 0 18px rgba(33,150,243,0.7);
+    }
+    #indicador.alto {
+      box-shadow: 0 0 18px rgba(244,67,54,0.9);
+      transform: scale(1.03);
+    }
+
+    #frase {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #444;
+    }
+
+    #status { 
+      font-size: 0.95rem; 
+      margin: 6px 0 12px; 
+      color: #7c4dff; 
+      text-align: center;
+    }
+
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #81d4fa, #f48fb1);
+      color: #222;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    }
+
+    .btn-secondary {
+      background-color: #fff3e0;
+      color: #444;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-secondary:hover {
+      background-color: #ffe0b2;
+    }
+
+    .music-card, .history-card {
+      margin-top: 12px;
+      padding: 12px 15px;
+      border-radius: 16px;
+      background-color: #faf5ff;
+      border: 1px solid #e0d7ff;
+    }
+
+    .music-card h3,
+    .history-card h3 {
+      margin-top: 0;
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #5e35b1;
+    }
+
+    audio {
+      width: 100%;
       margin-top: 5px;
-      color: #555;
+      border-radius: 999px;
+    }
+
+    #historial {
+      max-height: 130px;
+      overflow-y: auto;
+      margin-top: 5px;
+      padding-left: 0;
+      list-style: none;
+      font-size: 0.92rem;
+    }
+
+    #historial li {
+      padding: 4px 0;
+      border-bottom: 1px dashed #e0d7ff;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    #historial li span.nivel {
+      font-weight: 600;
+    }
+
+    .pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background-color: #e3f2fd;
+      font-size: 0.8rem;
+      color: #1565c0;
+      margin-bottom: 5px;
+    }
+
+    .footer-note {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #777;
+      text-align: right;
     }
   </style>
 </head>
 <body>
-  <h1>🐙 OctoCalm</h1>
-  
-  <p>
-    <label for="nombre">Nombre del paciente:</label><br>
-    <input type="text" id="nombre" placeholder="Escribe tu nombre aquí">
-  </p>
+  <div class="container">
+    <h1>🐙 OctoCalm</h1>
+    <p class="subtitle">Pulpo terapeuta para acompañar tus emociones y tu actividad muscular 💚</p>
 
-  <p id="feeling">¿Cómo te sientes hoy?</p>
+    <div class="top-layout">
+      <div>
+        <label for="nombre">Nombre del paciente:</label>
+        <input type="text" id="nombre" placeholder="Escribe tu nombre aquí">
 
-  <div id="buttons">
-    <button class="btn-feliz" onclick="responder('😄 Feliz')">😄 Feliz</button>
-    <button class="btn-tranquilo" onclick="responder('😐 Tranquilo')">😐 Tranquilo</button>
-    <button class="btn-estresado" onclick="responder('😟 Estresado')">😟 Estresado</button>
+        <p id="feeling">¿Cómo te sientes hoy?</p>
+
+        <div id="buttons">
+          <button class="btn-mood btn-feliz" onclick="responder('😄 Feliz')">😄 Feliz</button>
+          <button class="btn-mood btn-tranquilo" onclick="responder('😐 Tranquilo')">😐 Tranquilo</button>
+          <button class="btn-mood btn-estresado" onclick="responder('😟 Estresado')">😟 Estresado</button>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn-primary" onclick="conectarBluetooth()">🔗 Conectar OctoCalm (Bluetooth)</button>
+          <button class="btn-secondary" onclick="abrirMusica()">🎵 Abrir playlist en Spotify</button>
+        </div>
+
+        <div class="music-card">
+          <h3>🎧 Modo relajación</h3>
+          <span class="pill-tag">Reproducción directa</span>
+          <!-- Cambia la ruta por tu archivo de música o un link válido -->
+          <audio id="player" controls loop>
+            <source src="ruta_de_tu_audio.mp3" type="audio/mpeg">
+            Tu navegador no soporta el reproductor de audio.
+          </audio>
+        </div>
+      </div>
+
+      <div>
+        <div id="indicador-wrapper">
+          <div id="indicador" class="relajado">Relajado</div>
+        </div>
+
+        <p id="frase">¡Todo va a estar bien! 🫶</p>
+        <p id="status">Sin conexión Bluetooth.</p>
+
+        <div class="history-card">
+          <h3>📊 Historial de niveles EMG</h3>
+          <span class="pill-tag">Datos enviados por el ESP32</span>
+          <ul id="historial">
+            <!-- Aquí se llenan los registros de EMG -->
+          </ul>
+        </div>
+
+        <div class="actions-row" style="margin-top: 15px;">
+          <button class="btn-secondary" onclick="enviarResultados()">📩 Enviar resultados por correo</button>
+        </div>
+
+        <p class="footer-note">
+          *Se envía un correo con el resumen de los niveles registrados.
+        </p>
+      </div>
+    </div>
   </div>
-
-  <div id="indicador">Relajado</div>
-
-  <p id="status">Sin conexión Bluetooth.</p>
-  <p id="frase">¡Todo va a estar bien! </p>
-
-  <!-- Botones de conexión y música -->
-  <button onclick="conectarBluetooth()">🔗 Conectar por Bluetooth</button>
-  <button onclick="activarMusica()">🎵 Activar música</button>
-  <p id="musicStatus">Música: desactivada</p>
 
   <script>
     let bleDevice = null;
@@ -122,28 +348,11 @@
 
     // Cambia estos UUID por los que definas en el ESP32
     const SERVICE_UUID        = "12345678-1234-5678-1234-56789abcdef0";  // ejemplo
-    const CHARACTERISTIC_UUID = "12345678-1234-5678-1234-56789abcdef1";  // ejemplo
+    const CHARACTERISTIC_UUID = "12345678-1234-5678-1234-56789abcdef1"; // ejemplo
 
-    // ======== MÚSICA ========
-    // Asegúrate de que "musica_relajante.mp3" esté en el mismo folder que este HTML
-    const music = new Audio("musica_relajante.mp3");
-    music.loop = true;
-
-    let musicaHabilitada = false;   // solo se controla después de que el usuario lo permita
-    const musicStatusEl = document.getElementById('musicStatus');
-
-    function activarMusica() {
-      musicaHabilitada = true;
-      music.volume = 1.0;
-      music.play()
-        .then(() => {
-          musicStatusEl.innerText = "Música: activada (controlada por el nivel de estrés)";
-        })
-        .catch(err => {
-          console.warn("El navegador bloqueó el autoplay. Intenta hacer clic de nuevo.", err);
-          musicStatusEl.innerText = "Música: el navegador bloqueó el audio, vuelve a presionar.";
-        });
-    }
+    // Historial de niveles recibidos del ESP32
+    // Cada entrada: { hora: "hh:mm:ss", nivel: 0/1/2 }
+    const registrosEMG = [];
 
     function nombrePaciente() {
       return document.getElementById('nombre').value || "El paciente";
@@ -154,12 +363,21 @@
         `${nombrePaciente()} se siente ${feeling}`;
     }
 
+    function abrirMusica() {
+      // Abre tu playlist de Spotify en otra pestaña
+      window.open("https://spotify.link/EkeeZdYWwXb", "_blank");
+      // También puedes controlar el <audio> interno desde aquí si quieres:
+      const player = document.getElementById('player');
+      if (player) {
+        player.play().catch(() => {});
+      }
+    }
+
     async function conectarBluetooth() {
       try {
         document.getElementById('status').innerText = "Buscando OctoCalm por Bluetooth...";
 
         bleDevice = await navigator.bluetooth.requestDevice({
-          // Puedes filtrar por nombre que le pongas al ESP32
           filters: [{ namePrefix: "OctoCalm" }],
           optionalServices: [SERVICE_UUID]
         });
@@ -184,55 +402,101 @@
       }
     }
 
-    // Aquí esperamos que el ESP32 mande 1 byte:
+    // El ESP32 manda 1 byte:
     // 0 = relajado, 1 = medio, 2 = alto
     function onCharacteristicValueChanged(event) {
       const value = event.target.value;
-      const nivel = value.getUint8(0); // primer byte
+      const nivel = value.getUint8(0); // primer byte (0,1,2)
+
+      const ahora = new Date().toLocaleTimeString();
+      registrosEMG.push({ hora: ahora, nivel });
 
       actualizarNivelEstres(nivel);
+      actualizarHistorial();
+    }
+
+    function textoNivel(level) {
+      if (level === 0) return "Relajado";
+      if (level === 1) return "Medio";
+      return "Alto";
     }
 
     function actualizarNivelEstres(level) {
       const indicador = document.getElementById('indicador');
       const frase = document.getElementById('frase');
 
+      indicador.classList.remove("relajado", "medio", "alto");
+
       if (level === 0) {
         indicador.style.backgroundColor = "#4caf50"; // verde
         indicador.innerText = "Relajado";
         frase.innerText = "OctoCalm está muy tranquilo contigo 🐙💚";
-
-        // Música: relajado → volumen alto
-        if (musicaHabilitada) {
-          music.volume = 1.0;
-          if (music.paused) {
-            music.play().catch(() => {});
-          }
-        }
+        indicador.classList.add("relajado");
       } else if (level === 1) {
         indicador.style.backgroundColor = "#2196f3"; // azul
         indicador.innerText = "Medio";
         frase.innerText = "Vamos bien, sigamos respirando juntos 💙";
-
-        // Música: estrés medio → volumen bajito
-        if (musicaHabilitada) {
-          music.volume = 0.3;
-          if (music.paused) {
-            music.play().catch(() => {});
-          }
-        }
+        indicador.classList.add("medio");
       } else {
         indicador.style.backgroundColor = "#f44336"; // rojo
         indicador.innerText = "Alto";
         frase.innerText = "OctoCalm quiere ayudarte a calmarte ❤️‍🔥";
-
-        // Música: estrés alto → pausa
-        if (musicaHabilitada) {
-          music.pause();
-        }
+        indicador.classList.add("alto");
       }
+    }
+
+    function actualizarHistorial() {
+      const lista = document.getElementById('historial');
+      lista.innerHTML = "";
+
+      // Opcional: limitar el historial a las últimas 20 entradas
+      const ultimos = registrosEMG.slice(-20);
+
+      ultimos.forEach(reg => {
+        const li = document.createElement("li");
+
+        const spanHora = document.createElement("span");
+        spanHora.textContent = reg.hora;
+
+        const spanNivel = document.createElement("span");
+        spanNivel.className = "nivel";
+        spanNivel.textContent = textoNivel(reg.nivel);
+
+        li.appendChild(spanHora);
+        li.appendChild(spanNivel);
+        lista.appendChild(li);
+      });
+    }
+
+    function enviarResultados() {
+      if (!registrosEMG.length) {
+        alert("Aún no se han recibido datos del ESP32.");
+        return;
+      }
+
+      const nombre = nombrePaciente();
+      let textoRegistros = "";
+
+      registrosEMG.forEach(reg => {
+        textoRegistros += `${reg.hora}  ->  ${textoNivel(reg.nivel)} (nivel ${reg.nivel})\n`;
+      });
+
+      // Parámetros que se mandan a EmailJS.
+      // Estos nombres (paciente, registros) deben coincidir con los de tu template en EmailJS.
+      const templateParams = {
+        paciente: nombre,
+        registros: textoRegistros
+      };
+
+      // ⚠️ Cambia TU_SERVICE_ID y TU_TEMPLATE_ID por los tuyos de EmailJS
+      emailjs.send("TU_SERVICE_ID", "TU_TEMPLATE_ID", templateParams)
+        .then(function() {
+          alert("Resultados enviados correctamente ✅");
+        }, function(error) {
+          console.error("Error al enviar correo:", error);
+          alert("Ocurrió un error al enviar el correo 😢");
+        });
     }
   </script>
 </body>
 </html>
-
